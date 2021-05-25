@@ -10,11 +10,12 @@ from .utilities.multipoly import MP, keep_high_angle, set_contourf_properties,ge
 
 def contour_to_geojson(contour, geojson_filepath=None, min_angle_deg=None,
                        ndigits=5, unit='', stroke_width=1, geojson_properties=None, strdump=False,
-                       serialize=True):
+                       serialize=True, label_format=None):
     """Transform matplotlib.contour to geojson."""
     collections = contour.collections
     contour_index = 0
     line_features = []
+    label_format = "%.2f" if label_format is None else label_format
     for collection in collections:
         color = collection.get_edgecolor()
         for path in collection.get_paths():
@@ -27,7 +28,7 @@ def contour_to_geojson(contour, geojson_filepath=None, min_angle_deg=None,
             properties = {
                 "stroke-width": stroke_width,
                 "stroke": rgb2hex(color[0]),
-                "title": "%.2f" % contour.levels[contour_index] + ' ' + unit,
+                "title": label_format % contour.levels[contour_index] + ' ' + unit,
                 "level-value": float("%.6f" % contour.levels[contour_index]),
                 "level-index": contour_index
             }
